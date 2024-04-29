@@ -21,6 +21,7 @@ class Custom_Caltech(Caltech256) :
             self.S = s_min
         transform = A.Compose(
                 [
+                    A.Normalize(),
                     A.SmallestMaxSize(max_size=self.S),
                     A.RandomCrop(height =224,width=224),
                     A.HorizontalFlip(),
