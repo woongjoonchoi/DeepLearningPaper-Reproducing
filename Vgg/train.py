@@ -56,7 +56,7 @@ model = Model_vgg(model_version,num_classes)
 criterion = nn.CrossEntropyLoss()
 
 optimizer = optim.SGD(model.parameters(), lr=lr, weight_decay=weight_decay,momentum=momentum)
-scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'max',patience=1)
+scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'max',patience=1,eps = 1e-5)
 
 if init_from =='scratch' :
     print('Training initializie from scratch  ')

@@ -53,7 +53,8 @@ class Model_vgg(nn.Module) :
         conv_1_by_1_2_outchannel = 4096
         self.num_classes = num_classes
         self.linear_out = 4096
-        self.xavier_count = 3
+        self.xavier_count = 2
+        self.last_xavier= 0
         # conv_1_by_1_3_outchannel = num_classes
         super().__init__()
         self.feature_extractor = make_feature_extractor(Config_channels[version] , Config_kernel[version])
@@ -99,8 +100,9 @@ class Model_vgg(nn.Module) :
             print('-------------')
             print(m.kernel_size)
             print(m.out_channels)
-            if m.out_channels == self.num_classes or m.out_channels == self.linear_out :
+            if (m.out_channels == self.num_classes or m.out_channels == self.linear_out) and self.last_xavier>0 :
                 print('xavier')
+                # self.last_xavier-=1
                 nn.init.xavier_uniform_(m.weight)
             elif self.xavier_count >0 :
                 print('xavier')
@@ -110,6 +112,8 @@ class Model_vgg(nn.Module) :
                 std = 0.2
                 print(f'normal  std : {std}')
                 torch.nn.init.normal_(m.weight,std=std)
+                if (m.out_channels == self.num_classes or m.out_channels == self.linear_out) :
+                    self.last_xavier+=1
             if m.bias is not None :
                 nn.init.zeros_(m.bias)
         elif isinstance(m, nn.Linear):
