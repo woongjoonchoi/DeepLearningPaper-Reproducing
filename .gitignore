@@ -1,3 +1,11 @@
 Vgg/caltech256/
 Vgg/model_chk.pt
 Vgg/wandb/
+__pycache__/.
+dd.sh
+nohup.out
+../nohup.out
+Vgg/Checkpoint/
+looping.py
+Vgg/*.pt
+Vgg/cifar-100-python*

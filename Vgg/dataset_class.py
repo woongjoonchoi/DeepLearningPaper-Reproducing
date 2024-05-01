@@ -70,3 +70,60 @@ class Custom_Caltech(Caltech256) :
         # print(img)
         img=img.transpose((2,0,1))
         return img, target
+    
+    
+    
+class Custom_Cifar(CIFAR100) :
+    def __init__(self,root,transform = None,multi=False,s_max=None,s_min=256,download=False,val=False,train=True):
+
+        self.multi = multi
+        self.s_max = 512
+        self.s_min= 256
+        if multi :
+            self.S = np.random.randint(low=self.s_min,high=self.s_max)
+        else :
+            self.S = s_min
+            transform = A.Compose(
+                    [
+                        A.Normalize(mean =(0.5071, 0.4867, 0.4408) , std = (0.2675, 0.2565, 0.2761)),
+                        A.SmallestMaxSize(max_size=self.S),
+                        A.RandomCrop(height =224,width=224),
+                        A.HorizontalFlip(),
+                        # A.RGBShift()
+                    ]
+
+            )
+        super().__init__(root,transform=transform,train=train,download=download)
+        self.val =train
+        self.multi = multi
+    def __getitem__(self, index: int) :
+        """
+        Args:
+            index (int): Index
+
+        Returns:
+            tuple: (image, target) where target is index of the target class.
+        """
+        img, target = self.data[index], self.targets[index]
+
+        # doing this so that it is consistent with all other datasets
+        # to return a PIL Image
+
+        img = Image.fromarray(img)
+
+        if img.mode == 'L' : img = img.convert('RGB')
+        img=np.array(img,dtype=np.float32)
+        
+        
+        if self.transform is not None:
+            img = self.transform(image=img)
+            if len(img['image'].shape) == 3 and self.val==False :
+                img = A.RGBShift()(image=img['image'])
+            img = img['image']
+
+        if self.target_transform is not None:
+            target = self.target_transform(target)
+        # print(img)
+        img=img.transpose((2,0,1))
+
+        return img, target
