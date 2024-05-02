@@ -56,7 +56,7 @@ model = Model_vgg(model_version,num_classes)
 criterion = nn.CrossEntropyLoss()
 
 optimizer = optim.SGD(model.parameters(), lr=lr, weight_decay=weight_decay,momentum=momentum)
-scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'max',patience=1,eps = 1e-5)
+scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'max',patience=10,threshold=1e-3,eps = 1e-5)
 
 if init_from =='scratch' :
     print('Training initializie from scratch  ')
@@ -105,6 +105,38 @@ elif DatasetName == 'Cifar' :
                     ]
 
                 )
+    
+elif DatasetName == 'Cifar10' :
+    train_data = Custom_Cifar_10(root=os.getcwd(),download=True)
+    val_data  = Custom_Cifar_10(root=os.getcwd(),train=False,download=True)
+    val_data.val= True
+    val_data.s_min = test_min
+    val_data.transform=    A.Compose(
+                    [
+                        A.Normalize(mean =(0.5071, 0.4867, 0.4408) , std = (0.2675, 0.2565, 0.2761)),
+                        A.SmallestMaxSize(max_size=val_data.S),
+                        A.CenterCrop(height =224,width=224),
+                        # A.HorizontalFlip(),
+                        # A.RGBShift()
+                    ]
+
+                )
+    
+elif DatasetName == 'Mnist' :
+    train_data = Cusotm_MNIST(root=os.getcwd(),download=True)
+    val_data  = Cusotm_MNIST(root=os.getcwd(),train=False,download=True)
+    val_data.val= True
+    val_data.s_min = test_min
+    val_data.transform=    A.Compose(
+                    [
+                        A.Normalize(),
+                        A.SmallestMaxSize(max_size=val_data.S),
+                        A.CenterCrop(height =224,width=224),
+                        # A.HorizontalFlip(),
+                        # A.RGBShift()
+                    ]
+
+                )
 
     
 train_loader = torch.utils.data.DataLoader(train_data,batch_size= batch_size,shuffle = True , num_workers=4,pin_memory = True,prefetch_factor = 2,drop_last = True)
@@ -143,6 +175,9 @@ for e in range(epoch) :
     val_iter = iter(val_loader)
     train_acc=[0,0]
     train_num = 0
+    
+    total_acc = [0,0]
+    count= 0
     for i , data in tqdm(enumerate(train_loader)) :
         
         
@@ -183,7 +218,7 @@ for e in range(epoch) :
             val_loss = 0
             torch.cuda.empty_cache()
 
-            for i   in tqdm(range(update_count)) :
+            for j   in tqdm(range(update_count)) :
                 loss = None
                 print(f'Evaluation Steps Start')
                 try :
@@ -196,6 +231,11 @@ for e in range(epoch) :
                     
                     img , label = img.to(device, non_blocking=True) , label.to(device, non_blocking=True)
                     output = model(img)
+                    temp_output ,temp_label = output.detach().to('cpu') , label.detach().to('cpu')
+                    temp_acc = accuracy(temp_output,temp_label,(1,5))
+                    total_acc=[total_acc[0]+temp_acc[0] , total_acc[1]+temp_acc[1]]
+                    count+=batch_size
+                    
                     loss = criterion(output,label)/accum_step
                     val_loss += loss.detach().to('cpu') 
                     # loss.backward()
@@ -228,21 +268,21 @@ for e in range(epoch) :
         # optimizer.zero_grad()
         img,label,output = None,None,None
     
-    total_acc = [0,0]
-    count= 0
-    for i , data in enumerate(val_loader) :
-        count +=  batch_size
-        with torch.no_grad() :
-            model.eval()
-            img,label = data
-            img , label = img.to(device, non_blocking=True) , label.to(device, non_blocking=True)
-            output = model(img)
-            acc = accuracy(output.detach().to('cpu'),label.detach().to('cpu'),(1,5))
-            total_acc=[total_acc[0]+acc[0] , total_acc[1]+acc[1]]
+    # total_acc = [0,0]
+    # count= 0
+    # for i , data in enumerate(val_loader) :
+    #     count +=  batch_size
+    #     with torch.no_grad() :
+    #         model.eval()
+    #         img,label = data
+    #         img , label = img.to(device, non_blocking=True) , label.to(device, non_blocking=True)
+    #         output = model(img)
+    #         acc = accuracy(output.detach().to('cpu'),label.detach().to('cpu'),(1,5))
+    #         total_acc=[total_acc[0]+acc[0] , total_acc[1]+acc[1]]
     
-    print(f'top 1 val acc : {acc[0]}  top 5 val acc : {acc[1]}')
+    print(f'top 1 val acc : {total_acc[0]}  top 5 val acc : {total_acc[1]}')
     print(f'val_size :{count}')
-    top_1_acc ,top_5_acc   = 100*acc[0]/count, 100*acc[1]/count
+    top_1_acc ,top_5_acc   = 100*total_acc[0]/count, 100*total_acc[1]/count
     print(f'top 1 val acc  %: {top_1_acc}')
     print(f'top 5 val acc  %: {top_5_acc}')
     wandb.log({'val/top-1-error' : 100-top_1_acc})

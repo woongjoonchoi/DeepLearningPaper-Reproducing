@@ -1,8 +1,8 @@
-DatasetName = 'CalTech' # Cifar ,CalTech
+DatasetName = 'Cifar' # Cifar ,CalTech ,Cifar10, Mnist
 
 ## model configuration
 
-num_classes =   257# CalTech 257 Cifar 100 
+num_classes =   100# CalTech 257 Cifar 100  Cifar10 10 ,Mnist 10
 model_version = None ## you must configure it. 
 
 ## data configuration
@@ -25,7 +25,7 @@ train_multi_scale = False ## default, if you want multi scale, overwrite it to T
 eval_multi_scale = False 
 update_count = int(256/batch_size)
 accum_step = int(256/batch_size)
-eval_step = 5 * accum_step  ## CalTech 5 Cifar 10
+eval_step =5 * accum_step  ## CalTech 5 Cifar 5 Mnist 6 , Cifar10 5 
 
 ## resume
 
