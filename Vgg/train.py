@@ -11,6 +11,7 @@ from tqdm import tqdm
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
+print(f'device :{device}')
 # init_from = 'resume'
 
 parser = argparse.ArgumentParser(description='Reproducing VGG network ')
@@ -46,6 +47,12 @@ def accuracy(output, target, topk=(1,)):
         res.append(correct_k)
     return res
 
+## chkpoint to current cpu
+
+# def gpu_to_cpu(load_chkpoint):
+    
+
+
 ## argument parsing and configuration
 model_version = args.model_version[0]
 eval_multi_scale = args.eval_multi_scale
@@ -58,14 +65,15 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr=lr, weight_decay=weight_decay,momentum=momentum)
 scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'max',patience=10,threshold=1e-3,eps = 1e-5)
 
-if init_from =='scratch' :
-    print('Training initializie from scratch  ')
-elif init_from =='resume' :
-    print('resume')
+# if init_from =='scratch' :
+#     print('Training initializie from scratch  ')
+# elif init_from =='resume' :
+#     print('resume')
+#     load_pt = torch.load()
     
-else :
+# else :
     
-    raise Exception("you must set init_from to scratch or resume")
+#     raise Exception("you must set init_from to scratch or resume")
     
     
 ## dataset
@@ -138,7 +146,23 @@ elif DatasetName == 'Mnist' :
 
                 )
 
+elif DatasetName == 'ImageNet' :
+    train_data= Cusotm_ImageNet(root='ImageNet',split='train')
+    val_data= Cusotm_ImageNet('ImageNet',split='val',val=True)
+    val_data.val= True
+    val_data.s_min = test_min
+    val_data.transform=    A.Compose(
+                    [
+                        A.Normalize(),
+                        A.SmallestMaxSize(max_size=val_data.S),
+                        A.CenterCrop(height =224,width=224),
+                        # A.HorizontalFlip(),
+                        # A.RGBShift()
+                    ]
+
+                )
     
+
 train_loader = torch.utils.data.DataLoader(train_data,batch_size= batch_size,shuffle = True , num_workers=4,pin_memory = True,prefetch_factor = 2,drop_last = True)
 val_loader = torch.utils.data.DataLoader(val_data,batch_size= batch_size,shuffle = True , num_workers=4,pin_memory = True,prefetch_factor = 2,drop_last = True)
   
@@ -160,17 +184,42 @@ wandb.init(
     "epochs": 74,
     "batch size" : batch_size
     })
+best_val_loss=None
+save_checkpoint_name = f"vgg_{model_version}_{batch_size}_trainmin_{train_min}_testmin{test_min}_dataset_{DatasetName}.pt"
+resume_epoch= 0
+if init_from =='scratch' :
+    print('Training initializie from scratch  ')
+elif init_from =='resume' :
+    print('resume')
+    load_pt = torch.load(save_checkpoint_name)
+    model.load_state_dict(load_pt['model_state_dict'])
+    model.to(device)  ## model을 cuda tensor로 부터 resume할때 이코드가 필요하다.
+    optimizer = optim.SGD(model.parameters(), lr=lr, weight_decay=weight_decay,momentum=momentum)
+    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'max',patience=10,threshold=1e-3,eps = 1e-5)
+    optimizer.load_state_dict(load_pt['optimizer_state_dict'])
+    
+    resume_epoch = load_pt['epoch'] 
+    print(f"resume from epoch  :  {resume_epoch }  ")
+    print(f"resume from optimizer ")
+    print(optimizer)
+    
+    
+else :
+    
+    raise Exception("you must set init_from to scratch or resume")
 
 model = model.to(device)
 
-best_val_loss=None
-save_checkpoint_name = f"vgg_{model_version}_{batch_size}_trainmin_{train_min}_testmin{test_min}_dataset_{DatasetName}.pt"
 
 print(save_checkpoint_name)
 print(model)
 grad_clip =1.0
-for e in range(epoch) :
-    print(f'Training Epoch : {e}')
+
+for e in range(epoch-resume_epoch) :
+    print(f'Training Epoch : {e+resume_epoch}')
+    # if e == 0  and init_from == 'resume':
+    #     e =load_pt['epoch']
+    #     print()
     total_loss = 0 
     val_iter = iter(val_loader)
     train_acc=[0,0]
@@ -253,9 +302,10 @@ for e in range(epoch) :
             wandb.log({'val/loss' : val_loss})
             
             if best_val_loss is None or best_val_loss - val_loss >1e-4 :
+                
                 torch.save(
                         {
-                            'epoch' :  e ,
+                            'epoch' :  e+resume_epoch ,
                             'model_state_dict' : model.state_dict() , 
                             'optimizer_state_dict' : optimizer.state_dict(),
                             'loss' : loss,
@@ -298,4 +348,4 @@ for e in range(epoch) :
     
     scheduler.step(top_5_acc)
     wandb.log({'lr' : optimizer.param_groups[0]['lr']})
-    wandb.log({'epoch' : scheduler.last_epoch})
+    wandb.log({'epoch' : scheduler.last_epoch+resume_epoch})

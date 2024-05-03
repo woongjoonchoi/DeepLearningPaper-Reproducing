@@ -14,4 +14,10 @@ if __name__ =='__main__' :
     # print(os.getcwd())
     # imagenet_dataset = ImageNet(root='ImageNet',split='train')
     imagenet_dataset = ImageNet(root='ImageNet',split='val')
-    print('main')
+    # print('main')
+    
+    # label_dict = {}
+    # for _,label in imagenet_dataset :
+    #     if label not in label_dict:label_dict[label] =0
+    #     label_dict[label]+=1
+    # print(label_dict)

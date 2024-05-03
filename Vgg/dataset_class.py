@@ -2,7 +2,7 @@ import albumentations as A
 import numpy as np
 
 
-from torchvision.datasets import Caltech256 ,Caltech101 ,CIFAR100,CIFAR10,MNIST
+from torchvision.datasets import Caltech256 ,Caltech101 ,CIFAR100,CIFAR10,MNIST ,ImageNet
 import os
 from PIL import Image
 
@@ -227,6 +227,62 @@ class Cusotm_MNIST(MNIST) :
         if img.mode == 'L' : img = img.convert('RGB')
         img=np.array(img,dtype=np.float32)
         
+        
+        if self.transform is not None:
+            img = self.transform(image=img)
+            if len(img['image'].shape) == 3 and self.val==False :
+                img = A.RGBShift()(image=img['image'])
+            img = img['image']
+
+        if self.target_transform is not None:
+            target = self.target_transform(target)
+        # print(img)
+        img=img.transpose((2,0,1))
+
+        return img, target
+    
+class Cusotm_ImageNet(ImageNet) :
+    def __init__(self,root,transform = None,multi=False,s_max=None,s_min=256,split=None,val=False):
+
+        self.multi = multi
+        self.s_max = 512
+        self.s_min= 256
+        if multi :
+            self.S = np.random.randint(low=self.s_min,high=self.s_max)
+        else :
+            self.S = s_min
+            transform = A.Compose(
+                    [
+                        A.Normalize(),
+                        A.SmallestMaxSize(max_size=self.S),
+                        A.RandomCrop(height =224,width=224),
+                        A.HorizontalFlip(),
+                        # A.RGBShift()
+                    ]
+
+            )
+        super().__init__(root,transform=transform,split=split)
+        self.val =val
+        self.multi = multi
+    def __getitem__(self, index: int) :
+        """
+        Args:
+            index (int): Index
+
+        Returns:
+            tuple: (image, target) where target is index of the target class.
+        """
+        path, target = self.samples[index]
+        img = self.loader(path)
+        # doing this so that it is consistent with all other datasets
+        # to return a PIL Image
+        img=np.array(img)
+        img = Image.fromarray(img)
+
+        if img.mode == 'L' : img = img.convert('RGB')
+        img=np.array(img,dtype=np.float32)
+        
+        # print(self.transform)
         
         if self.transform is not None:
             img = self.transform(image=img)
