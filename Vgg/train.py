@@ -49,13 +49,30 @@ def accuracy(output, target, topk=(1,)):
 
 ## chkpoint to current cpu
 
-# def gpu_to_cpu(load_chkpoint):
-    
-
-
 ## argument parsing and configuration
 model_version = args.model_version[0]
 eval_multi_scale = args.eval_multi_scale
+
+## wandb login and project setting
+import wandb
+wandb.login()    
+
+wandb.init(
+    # Set the project where this run will be logged
+    project="vgg-2",
+    # We pass a run name (otherwise it’ll be randomly assigned, like sunshine-lollypop-10)
+    name=f"vgg_{model_version}_dataset_{DatasetName}trainmin_{train_min}_testmin{test_min}",
+    # Track hyperparameters and run metadata
+    config={
+    "learning_rate": 0.01,
+    "architecture": f"vgg_{model_version}_trainmin_{train_min}_testmin{test_min}",
+    "dataset": DatasetName,
+    "epochs": 74,
+    "batch size" : batch_size
+    })
+
+
+
 
 
 ## neuralnet and optimizer configuration
@@ -167,23 +184,7 @@ train_loader = torch.utils.data.DataLoader(train_data,batch_size= batch_size,shu
 val_loader = torch.utils.data.DataLoader(val_data,batch_size= batch_size,shuffle = True , num_workers=4,pin_memory = True,prefetch_factor = 2,drop_last = True)
   
 
-## wandb login and project setting
-import wandb
-wandb.login()    
 
-wandb.init(
-    # Set the project where this run will be logged
-    project="vgg-2",
-    # We pass a run name (otherwise it’ll be randomly assigned, like sunshine-lollypop-10)
-    name=f"vgg_{model_version}_dataset_{DatasetName}trainmin_{train_min}_testmin{test_min}",
-    # Track hyperparameters and run metadata
-    config={
-    "learning_rate": 0.01,
-    "architecture": f"vgg_{model_version}_trainmin_{train_min}_testmin{test_min}",
-    "dataset": DatasetName,
-    "epochs": 74,
-    "batch size" : batch_size
-    })
 best_val_loss=None
 save_checkpoint_name = f"vgg_{model_version}_{batch_size}_trainmin_{train_min}_testmin{test_min}_dataset_{DatasetName}.pt"
 resume_epoch= 0

@@ -1,6 +1,6 @@
 import torch
 from torch import nn
-
+from config import *
 
 
 Config_channels = {
@@ -53,7 +53,7 @@ class Model_vgg(nn.Module) :
         conv_1_by_1_2_outchannel = 4096
         self.num_classes = num_classes
         self.linear_out = 4096
-        self.xavier_count = 4 
+        self.xavier_count = xavier_count
         self.last_xavier= 1  ## if >0 , initialize last 3 fully connected noraml distribution
         # conv_1_by_1_3_outchannel = num_classes
         super().__init__()

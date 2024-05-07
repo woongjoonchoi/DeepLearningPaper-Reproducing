@@ -28,6 +28,13 @@ update_count = int(256/batch_size)
 accum_step = int(256/batch_size)
 eval_step =26 * accum_step  ## CalTech 5 Cifar 5 Mnist 6 , Cifar10 5 ImageNet  26
 
+
+## model configuration
+xavier_count= 8   
+# Cifar100,Cifar,Mnist model B  4
+# ImageNet model A 4  model B  8
+
+
 ## resume
 
 
