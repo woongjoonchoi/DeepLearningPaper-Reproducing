@@ -12,3 +12,12 @@ The code in this repo replicates the paper's configuration and trains the model 
 ## Usage
 
 ## todos
+
+Define Your Own Dataset and train from scratch!.  
+
+## Referenecs
+
+[VGG paper](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwjs_fuO5ISGAxUra_UHHc5GD6oQFnoECBUQAQ&url=https%3A%2F%2Farxiv.org%2Fabs%2F1409.1556&usg=AOvVaw17ak86ejVzNlyA2N-WpWmZ&opi=89978449)  
+[karpathy/mingpt](https://github.com/karpathy/minGPT) The readme and project template were inspired by this repo.  
+[grad accumulation](https://discuss.pytorch.org/t/why-do-we-need-to-set-the-gradients-manually-to-zero-in-pytorch/4903/20?u=alband) i used grad accumulation code from this post.  
+[torchvision vgg](https://github.com/pytorch/vision/blob/main/torchvision/models/vgg.py)  
