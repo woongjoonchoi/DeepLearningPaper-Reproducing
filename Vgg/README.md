@@ -8,6 +8,8 @@ The code in this repo replicates the paper's configuration and trains the model 
 
 Due to limitations in GPU resources and time, training has only been possible up to about 15 epochs. If time or resources allow, training will be continued.
 
+You can see many `ipynb` file in this repo. These files define the training configuration of vgg net and evaluate the evaluation methods step-by-step. Finally, the `.py` file contains all configuration and evaluation methods.
+
 ## Library Installation
 ```
 torch==2.0.0+cu118
@@ -18,16 +20,24 @@ wandb==0.16.6
 ```
 Other libraries may be needed,  It's a bit of a hassle, but I hope you can install it on your own.If you post an issue regarding the insufficient library version, I will fix it. 
 ## Usage
-How to instaniate model
-```
-
-
-```
 
 How to train model 
 ```
+python train.py --model_version [Spepcific version]
+```
+The model version includes [A,A_lrn,B,C,D,E].  
+If you train your own model in gpu, you need least 12GB Gpu for batch size 64 .  
+
+How to modify configuration
+```
+DatasetName = 'ImageNet' # Cifar  ,Cifar10, Mnist , ImageNet
+
+## model configuration
 
 ```
+In `config.py` , you can modify your configuration using python syntax.   
+In particular, i support training on four datasets.`Cifar` , `Cifar10`, `Mnist`, `ImageNet` .  
+If you want to train from ImageNet, you must download your dataset form [imagenet link](https://image-net.org/index.php).  ImageNet dataset require about 350GB disk storage for unzip . 
 ## todos
 
 Define Your Own Dataset and add it to `config.py` .Then ,  train from scratch!.  
