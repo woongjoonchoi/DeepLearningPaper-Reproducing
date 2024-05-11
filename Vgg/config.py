@@ -22,7 +22,7 @@ weight_decay  = 5e-4
 lr_factor = 0.1
 epoch = 74
 nestrov = False  # ImageNet D nestrov True
-clip= 0.7  # ImageNet D clip 0.7
+clip= 0.7  
 
 train_multi_scale = False ## default, if you want multi scale, overwrite it to True
 eval_multi_scale = False 
@@ -33,8 +33,6 @@ eval_step =26 * accum_step  ## CalTech 5 Cifar 5 Mnist 6 , Cifar10 5 ImageNet  2
 
 ## model configuration
 xavier_count= 12   
-# Cifar100,Cifar,Mnist model B  4
-# ImageNet model A 4  model B  8 model C 11 model D 11
 
 
 ## resume
