@@ -6,6 +6,8 @@ VGG is a classical convolutional neural network architecture. It was based on an
 
 The code in this repo replicates the paper's configuration and trains the model from scratch with ImageNet data.  Techniques that were not available at the time (e.g. batchnormalization) were not used, configurations explicitly mentioned in the paper were not modified, and configurations not explicitly mentioned were set arbitrarily.
 
+Due to limitations in GPU resources and time, training has only been possible up to about 15 epochs. If time or resources allow, training will be continued.
+
 ## Library Installation
 ```
 torch==2.0.0+cu118
