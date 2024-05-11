@@ -40,7 +40,7 @@ In particular, i support training on four datasets.`Cifar` , `Cifar10`, `Mnist`,
 If you want to train from ImageNet, you must download your dataset form [imagenet link](https://image-net.org/index.php).  ImageNet dataset require about 350GB disk storage for unzip . 
 ## todos
 
-Define Your Own Dataset and add it to `config.py` .Then ,  train from scratch!.  
+Define Your Own Dataset and add it to `dataset_class.py` .Then ,  train from scratch!.  
 
 ## Referenecs
 
