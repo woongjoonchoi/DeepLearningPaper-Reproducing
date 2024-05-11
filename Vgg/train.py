@@ -79,9 +79,12 @@ wandb.init(
 model = Model_vgg(model_version,num_classes)
 criterion = nn.CrossEntropyLoss()
 
-optimizer = optim.SGD(model.parameters(), lr=lr, weight_decay=weight_decay,momentum=momentum)
+optimizer = optim.SGD(model.parameters(), lr=lr, weight_decay=weight_decay,nesterov=nestrov,momentum=momentum)
 scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'max',patience=10,threshold=1e-3,eps = 1e-5)
 
+if nestrov :
+    print('nestrov sgd momentum')
+    print(optimizer)
 # if init_from =='scratch' :
 #     print('Training initializie from scratch  ')
 # elif init_from =='resume' :
@@ -213,8 +216,11 @@ model = model.to(device)
 
 
 print(save_checkpoint_name)
+grad_clip = clip 
+
+print(f'grad clip : {grad_clip}')
 print(model)
-grad_clip =1.0
+
 
 for e in range(epoch-resume_epoch) :
     print(f'Training Epoch : {e+resume_epoch}')

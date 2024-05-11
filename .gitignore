@@ -9,3 +9,4 @@ Vgg/Checkpoint/
 looping.py
 Vgg/*.pt
 Vgg/cifar-100-python*
+Vgg/ImageNet/

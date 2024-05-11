@@ -13,7 +13,7 @@ from torch.utils.data import Subset
 if __name__ =='__main__' :
     # print(os.getcwd())
     # imagenet_dataset = ImageNet(root='ImageNet',split='train')
-    imagenet_dataset = ImageNet(root='ImageNet',split='train')
+    imagenet_dataset = ImageNet(root='ImageNet',split='val')
     # print('main')
     
     # label_dict = {}
