@@ -7,13 +7,28 @@ VGG is a classical convolutional neural network architecture. It was based on an
 The code in this repo replicates the paper's configuration and trains the model from scratch with ImageNet data.  Techniques that were not available at the time (e.g. batchnormalization) were not used, configurations explicitly mentioned in the paper were not modified, and configurations not explicitly mentioned were set arbitrarily.
 
 ## Library Installation
-
-
+```
+torch==2.0.0+cu118
+torchvision==0.15.1+cu118
+albumentations==1.4.6
+tqdm==4.66.2
+wandb==0.16.6
+```
+Other libraries may be needed,  It's a bit of a hassle, but I hope you can install it on your own.If you post an issue regarding the insufficient library version, I will fix it. 
 ## Usage
+How to instaniate model
+```
 
+
+```
+
+How to train model 
+```
+
+```
 ## todos
 
-Define Your Own Dataset and train from scratch!.  
+Define Your Own Dataset and add it to `config.py` .Then ,  train from scratch!.  
 
 ## Referenecs
 
