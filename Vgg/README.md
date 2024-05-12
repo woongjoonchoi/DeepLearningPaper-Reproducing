@@ -10,6 +10,11 @@ Due to limitations in GPU resources and time, training has only been possible up
 
 You can see many `ipynb` file in this repo. These files define the training configuration of vgg net and evaluate the evaluation methods step-by-step. Finally, the `.py` file contains all configuration and evaluation methods.
 
+## Several ineffective trials 
+[Link](https://woongjoonchoi.github.io/Failure-with-vgg/) : Describes the process for resolving issues that occurred while training over 100 million models.  
+
+
+When I first trained Vgg, I thought it would work well because it was a simple architecture. Because it was the first time training a model with more than 100 million parameters and a layer depth of more than 10 from scratch, i did not expect many issues in addition to convergence speed and accuracy issues. Therefore, i made several attempts to resolve these issues and found an optimized solution. I described the various attempts I made to find these solutions and how I came to this conclusion.
 ## Library Installation
 ```
 torch==2.0.0+cu118
