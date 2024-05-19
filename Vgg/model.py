@@ -54,7 +54,7 @@ class Model_vgg(nn.Module) :
         self.num_classes = num_classes
         self.linear_out = 4096
         self.xavier_count = xavier_count
-        self.last_xavier= 1  ## if >0 , initialize last 3 fully connected noraml distribution
+        self.last_xavier= last_xavier  ## if >0 , initialize last 3 fully connected noraml distribution
         # conv_1_by_1_3_outchannel = num_classes
         super().__init__()
         self.feature_extractor = make_feature_extractor(Config_channels[version] , Config_kernel[version])
@@ -100,7 +100,8 @@ class Model_vgg(nn.Module) :
             print('-------------')
             print(m.kernel_size)
             print(m.out_channels)
-            if (m.out_channels == self.num_classes or m.out_channels == self.linear_out) and self.last_xavier>0 :
+            # if (m.out_channels == self.num_classes or m.out_channels == self.linear_out) and self.last_xavier>0 :
+            if self.last_xavier>0 :
                 print('xavier')
                 # self.last_xavier-=1
                 nn.init.xavier_uniform_(m.weight)
@@ -111,13 +112,22 @@ class Model_vgg(nn.Module) :
             else : 
                 std = 0.1
                 print(f'normal  std : {std}')
+                
                 torch.nn.init.normal_(m.weight,std=std)
                 # if (m.out_channels == self.num_classes or m.out_channels == self.linear_out) :
-                #     self.last_xavier+=1
+                #     self.last_xavier+=10
+            self.last_xavier +=1
             if m.bias is not None :
+                print('bias zero init')
                 nn.init.zeros_(m.bias)
         elif isinstance(m, nn.Linear):
-            nn.init.xavier_uniform_(m.weight)
+            if self.last_xavier >0 :
+                nn.init.xavier_uniform_(m.weight)
+                self.last_xavier-=1
+            else : 
+                torch.nn.init.normal_(m.weight,std=std)
+                self.last_xavier+=1
+                print(f'last xavier increase to {self.last_xavier}')
             nn.init.constant_(m.bias, 0)
 
     #     pass

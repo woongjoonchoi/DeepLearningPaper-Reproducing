@@ -50,26 +50,40 @@ def accuracy(output, target, topk=(1,)):
 ## chkpoint to current cpu
 
 ## argument parsing and configuration
+model_laeyrs_num={"A" : 11,"B":13,"C":16,"D":16,"E":19}
+
 model_version = args.model_version[0]
 eval_multi_scale = args.eval_multi_scale
 
+model_layers=model_laeyrs_num[model_version]
+
+
 ## wandb login and project setting
 import wandb
-wandb.login()    
+wandb.login()   
+if init_from =='resume'  :
+    wandb.init(
+        # Set the project where this run will be logged
+        project="vgg-2",
+        # We pass a run name (otherwise it’ll be randomly assigned, like sunshine-lollypop-10)
+        id = "yjjm6217",
+        resume="must"
+    )
 
-wandb.init(
-    # Set the project where this run will be logged
-    project="vgg-2",
-    # We pass a run name (otherwise it’ll be randomly assigned, like sunshine-lollypop-10)
-    name=f"vgg_{model_version}_dataset_{DatasetName}trainmin_{train_min}_testmin{test_min}",
-    # Track hyperparameters and run metadata
-    config={
-    "learning_rate": 0.01,
-    "architecture": f"vgg_{model_version}_trainmin_{train_min}_testmin{test_min}",
-    "dataset": DatasetName,
-    "epochs": 74,
-    "batch size" : batch_size
-    })
+else :
+    wandb.init(
+        # Set the project where this run will be logged
+        project="vgg-2",
+        # We pass a run name (otherwise it’ll be randomly assigned, like sunshine-lollypop-10)
+        name=f"vgg_{model_version}_dataset_{DatasetName}trainmin_{train_min}_testmin{test_min}",
+        # Track hyperparameters and run metadata
+        config={
+        "learning_rate": 0.01,
+        "architecture": f"vgg_{model_version}_trainmin_{train_min}_testmin{test_min}",
+        "dataset": DatasetName,
+        "epochs": 74,
+        "batch size" : batch_size
+        })
 
 
 
@@ -189,7 +203,7 @@ val_loader = torch.utils.data.DataLoader(val_data,batch_size= batch_size,shuffle
 
 
 best_val_loss=None
-save_checkpoint_name = f"vgg_{model_version}_{batch_size}_trainmin_{train_min}_testmin{test_min}_dataset_{DatasetName}.pt"
+save_checkpoint_name = f"vgg_{model_version}_{batch_size}_trainmin_{train_min}_testmin{test_min}_dataset_{DatasetName}_{xavier_count}_{model_layers+last_xavier-1}.pt"
 resume_epoch= 0
 if init_from =='scratch' :
     print('Training initializie from scratch  ')
@@ -216,12 +230,12 @@ model = model.to(device)
 
 
 print(save_checkpoint_name)
-grad_clip = clip 
+grad_clip = 1.0
 
 print(f'grad clip : {grad_clip}')
 print(model)
 
-
+wandb.watch(model,log="all", log_freq=26)
 for e in range(epoch-resume_epoch) :
     print(f'Training Epoch : {e+resume_epoch}')
     # if e == 0  and init_from == 'resume':
@@ -257,10 +271,16 @@ for e in range(epoch-resume_epoch) :
         img,label=None,None
         torch.cuda.empty_cache()
         if i> 0 and i%update_count == 0 :
-            print(f'Training steps : {i}  parameter update')
-            torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip)
+            print(f'Training steps : {i}  parameter update loss :{total_loss} ')
+            if grad_clip is not None:
+                print(f'Training steps : {i}  parameter grad clip to {grad_clip}')
+                torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip)
             optimizer.step()
             optimizer.zero_grad(set_to_none=True)
+            
+            if total_loss < 7.0 :
+                print(f"train loss {total_loss}less than 7.0  ,set grad clip to {clip}")
+                grad_clip = clip 
             if i % eval_step != 0 :  
                 total_loss = 0 
                 
@@ -270,7 +290,9 @@ for e in range(epoch-resume_epoch) :
             
             print(f'train losss :{total_loss}')
             wandb.log({'train/loss' : total_loss})
-            total_loss= 0 
+            temp_loss = total_loss
+            total_loss= 0
+             
             val_loss = 0
             torch.cuda.empty_cache()
 
@@ -307,7 +329,10 @@ for e in range(epoch-resume_epoch) :
 
 
             wandb.log({'val/loss' : val_loss})
-            
+            if abs(val_loss-temp_loss) > 0.03 :
+                grad_clip=clip
+                print(f"val_loss {val_loss} - train_loss {temp_loss} = {abs(val_loss-temp_loss)} > 0.3")
+                print(f"set grad clip to {grad_clip}")
             if best_val_loss is None or best_val_loss - val_loss >1e-4 :
                 
                 torch.save(
