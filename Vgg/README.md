@@ -10,6 +10,11 @@ Due to limitations in GPU resources and time, training has only been possible up
 
 You can see many `ipynb` file in this repo. These files define the training configuration of vgg net and evaluate the evaluation methods step-by-step. Finally, the `.py` file contains all configuration and evaluation methods.
 
+## Several ineffective trials 
+[Link](https://woongjoonchoi.github.io/Failure-with-vgg/) : Describes the process for resolving issues that occurred while training over 100 million models.  
+
+
+When I first trained Vgg, I thought it would work well because it was a simple architecture. Because it was the first time training a model with more than 100 million parameters and a layer depth of more than 10 from scratch, i did not expect many issues in addition to convergence speed and accuracy issues. Therefore, i made several attempts to resolve these issues and found an optimized solution. I described the various attempts I made to find these solutions and how I came to this conclusion.
 ## Library Installation
 ```
 torch==2.0.0+cu118
@@ -21,14 +26,14 @@ wandb==0.16.6
 Other libraries may be needed,  It's a bit of a hassle, but I hope you can install it on your own.If you post an issue regarding the insufficient library version, I will fix it. 
 ## Usage
 
-How to train model 
+### How to train model 
 ```
 python train.py --model_version [Spepcific version]
 ```
 The model version includes [A,A_lrn,B,C,D,E].  
 If you train your own model in gpu, you need least 12GB Gpu for batch size 64 .  
 
-How to modify configuration
+### How to modify configuration
 ```
 DatasetName = 'ImageNet' # Cifar  ,Cifar10, Mnist , ImageNet
 
@@ -37,10 +42,43 @@ DatasetName = 'ImageNet' # Cifar  ,Cifar10, Mnist , ImageNet
 ```
 In `config.py` , you can modify your configuration using python syntax.   
 In particular, i support training on four datasets.`Cifar` , `Cifar10`, `Mnist`, `ImageNet` .  
-If you want to train from ImageNet, you must download your dataset form [imagenet link](https://image-net.org/index.php).  ImageNet dataset require about 350GB disk storage for unzip . 
+If you want to train from ImageNet, you must download your dataset form [imagenet link](https://image-net.org/index.php).  ImageNet dataset require about 350GB disk storage for unzip .  
+There are many configurations other than those I mentioned in `config.py` . Because an explicit name is used in the configuration, and the python code is less than 1000 lines long, you can check it directly line by line.
 ## todos
 
 Define Your Own Dataset and add it to `dataset_class.py` .Then ,  train from scratch!.  
+
+## Noteworthy points
+
+In the paper, it is said that after training model A, the weights of models B, C(vgg16), D(vgg19), and E(vgg19) were trained using the weights of model A.  
+Then, after submitting the paper, they say they found a way to train B, C, D, and E without using transfer learning.  
+It was said that xavier initialization was used as that method, but there is no description of the specific details.  
+However, I succeeded in training models B, C, and D without transfer learning using xavier initialization.
+
+## Expected Results
+If i train for the time specified in the paper, it is expected that the results in the paper will be reproduced. 
+
+## Single scale train and  evaluation
+### Train dataset metric
+|<img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/82f9a090-7270-43a7-aa71-ff3eabebe235"  width="300" height="300"> |<img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/5c5bc9dd-b967-4f7a-b085-43135bfc99ec"  width="300" height="300">| <img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/9a5a8f57-fa6b-4878-afe8-6722cc5d914f"  width="300" height="300">| 
+|:--: |:--: |:--:  |
+| *train/loss*  |*train/top-1-error* |*train/top-5-error*|
+
+### Validation dataset metric
+
+|<img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/bb9c1952-f25e-49d8-823e-3b216689edef"  width="300" height="300"> |<img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/720b069c-0998-46d4-b757-e3bd1c941414"  width="300" height="300">|<img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/19ab399e-ea84-498f-a630-6f5842b40efa"  width="300" height="300">| 
+|:--: |:--: |:--:  |
+| *val/loss*  |*val/top-1-error* |*val/top-5-error*|
+
+### Metric Table
+
+
+|version |epoch|train S|test Q |val top-5 | val top-1|
+|---|---|----|---|---|---|
+|A |18 |256 |256| 57.74|79.48 |
+|B | 15| 256|256 |55.43| 77.77|
+|C | 9| 256| 256|71.75|88.06 |
+|D | 4|256 |256 |93.67|98.20 |
 
 ## Referenecs
 
@@ -48,3 +86,4 @@ Define Your Own Dataset and add it to `dataset_class.py` .Then ,  train from scr
 [karpathy/mingpt](https://github.com/karpathy/minGPT) The readme and project template were inspired by this repo.  
 [grad accumulation](https://discuss.pytorch.org/t/why-do-we-need-to-set-the-gradients-manually-to-zero-in-pytorch/4903/20?u=alband) i used grad accumulation code from this post.  
 [torchvision vgg](https://github.com/pytorch/vision/blob/main/torchvision/models/vgg.py)  
+[DeepLearning Book](https://www.deeplearningbook.org/)  I used Optimization solution from this book chp 8.
