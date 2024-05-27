@@ -60,13 +60,13 @@ If i train for the time specified in the paper, it is expected that the results 
 
 ## Single scale train and  evaluation
 ### Train dataset metric
-|<img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/82f9a090-7270-43a7-aa71-ff3eabebe235"  width="300" height="300"> |<img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/5c5bc9dd-b967-4f7a-b085-43135bfc99ec"  width="300" height="300">| <img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/9a5a8f57-fa6b-4878-afe8-6722cc5d914f"  width="300" height="300">| 
+|<img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/fbe18970-b815-48cd-bb0a-ebf2f03551ed"  width="300" height="300"> |<img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/0260d25a-f03a-4e72-999e-029ceed6a805"  width="300" height="300">| <img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/cdae299b-31a1-4338-a8a6-760fbe7a8658"  width="300" height="300">| 
 |:--: |:--: |:--:  |
 | *train/loss*  |*train/top-1-error* |*train/top-5-error*|
 
 ### Validation dataset metric
 
-|<img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/bb9c1952-f25e-49d8-823e-3b216689edef"  width="300" height="300"> |<img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/720b069c-0998-46d4-b757-e3bd1c941414"  width="300" height="300">|<img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/19ab399e-ea84-498f-a630-6f5842b40efa"  width="300" height="300">| 
+|<img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/bb21663b-3fb5-4272-9591-81122c12c6da"  width="300" height="300"> |<img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/f29d1202-425b-42c7-bfdc-85f0ea5fd2f4"  width="300" height="300">|<img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/c8d67e27-9559-4daf-aa21-f0149735e653"  width="300" height="300">| 
 |:--: |:--: |:--:  |
 | *val/loss*  |*val/top-1-error* |*val/top-5-error*|
 
@@ -75,8 +75,8 @@ If i train for the time specified in the paper, it is expected that the results 
 
 |version |epoch|train S|test Q |val top-5 | val top-1|
 |---|---|----|---|---|---|
-|A |18 |256 |256| 57.74|79.48 |
-|B | 15| 256|256 |55.43| 77.77|
+|A |10 |256 |256| 30.85|57.49 |
+|B | 6| 256|256 |41.59| 68.00|
 |C | 9| 256| 256|71.75|88.06 |
 |D | 4|256 |256 |93.67|98.20 |
 
