@@ -70,6 +70,13 @@ If i train for the time specified in the paper, it is expected that the results 
 |:--: |:--: |:--:  |
 | *val/loss*  |*val/top-1-error* |*val/top-5-error*|
 
+
+### Vgg metric from ms research 
+Plot from ResNet Paper. They trained 18 vgg on ImageNet Dataset from scratch .  
+| <img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/a170125a-5ab7-4725-8e34-3f8853fa02d8"  width="300" height="300">| 
+|:--: |
+|*val/top-1-error* |
+
 ### Metric Table
 
 
@@ -79,6 +86,8 @@ If i train for the time specified in the paper, it is expected that the results 
 |B | 6| 256|256 |41.59| 68.00|
 |C | 9| 256| 256|71.75|88.06 |
 |D | 4|256 |256 |93.67|98.20 |
+|Microsoft Research layer 18|10|-|-|-|54.00|
+
 
 ## Referenecs
 
@@ -86,4 +95,5 @@ If i train for the time specified in the paper, it is expected that the results 
 [karpathy/mingpt](https://github.com/karpathy/minGPT) The readme and project template were inspired by this repo.  
 [grad accumulation](https://discuss.pytorch.org/t/why-do-we-need-to-set-the-gradients-manually-to-zero-in-pytorch/4903/20?u=alband) i used grad accumulation code from this post.  
 [torchvision vgg](https://github.com/pytorch/vision/blob/main/torchvision/models/vgg.py)  
-[DeepLearning Book](https://www.deeplearningbook.org/)  I used Optimization solution from this book chp 8.
+[DeepLearning Book](https://www.deeplearningbook.org/)  I used Optimization solution from this book chp 8.  
+[ResNet](https://arxiv.org/abs/1512.03385) I used Imagnet training plot  
