@@ -83,7 +83,7 @@ Plot from ResNet Paper. They trained 18 vgg on ImageNet Dataset from scratch .
 |version |epoch|train S|test Q |val top-5 | val top-1|
 |---|---|----|---|---|---|
 |A |10 |256 |256| 30.85|57.49 |
-|B | 10| 256|256 |41.59| 59.18|
+|B | 10| 256|256 |32.01| 59.18|
 |C | 9| 256| 256|71.75|88.06 |
 |D | 4|256 |256 |93.67|98.20 |
 |Microsoft Research layer 18|10|-|-|-|**54.00**|
