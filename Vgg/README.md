@@ -80,13 +80,13 @@ Plot from ResNet Paper. They trained 18 vgg on ImageNet Dataset from scratch .
 ### Metric Table
 
 
-|version |epoch|train S|test Q |val top-5 | val top-1|
-|---|---|----|---|---|---|
-|A |10 |256 |256| 30.85|57.49 |
-|B | 10| 256|256 |32.01| 59.18|
-|C |3 | 256| 256|68.87|87.11|
-|D | |256 |256 || |
-|Microsoft Research layer 18|10|-|-|-|**54.00**|
+|version |epoch|train S|test Q |val top-5 | val top-1|center 10-crop|
+|---|---|----|---|---|---|----|
+|A |10 |256 |256| 30.84|57.48 ||
+|B | 10| 256|256 |32.00| 59.17||
+|C |6 | 256| 256|43.98|70.17||
+|D | |256 |256 || ||
+|Microsoft Research layer 18|10|-|-|-|-|**54.00**|
 
 
 ## Referenecs
