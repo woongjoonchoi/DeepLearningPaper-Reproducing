@@ -66,7 +66,7 @@ if init_from =='resume'  :
         # Set the project where this run will be logged
         project="vgg-2",
         # We pass a run name (otherwise it’ll be randomly assigned, like sunshine-lollypop-10)
-        id = "yjjm6217",
+        id = project_id,
         resume="must"
     )
 
@@ -203,8 +203,11 @@ val_loader = torch.utils.data.DataLoader(val_data,batch_size= batch_size,shuffle
 
 
 best_val_loss=None
-save_checkpoint_name = f"vgg_{model_version}_{batch_size}_trainmin_{train_min}_testmin{test_min}_dataset_{DatasetName}_{xavier_count}_{model_layers+last_xavier-1}.pt"
-resume_epoch= 0
+if except_xavier is None :
+    save_checkpoint_name = f"vgg_{model_version}_{batch_size}_trainmin_{train_min}_testmin{test_min}_dataset_{DatasetName}_{xavier_count}_{model_layers+last_xavier-1}.pt"
+else :
+    save_checkpoint_name = f"vgg_{model_version}_{batch_size}_trainmin_{train_min}_testmin{test_min}_dataset_{DatasetName}_{xavier_count}_{model_layers+last_xavier-1}_{except_xavier}.pt"
+resume_epoch= 1
 if init_from =='scratch' :
     print('Training initializie from scratch  ')
 elif init_from =='resume' :
@@ -215,7 +218,7 @@ elif init_from =='resume' :
     optimizer = optim.SGD(model.parameters(), lr=lr, weight_decay=weight_decay,momentum=momentum)
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'max',patience=10,threshold=1e-3,eps = 1e-5)
     optimizer.load_state_dict(load_pt['optimizer_state_dict'])
-    
+    optimizer.zero_grad(set_to_none=True)
     resume_epoch = load_pt['epoch'] 
     print(f"resume from epoch  :  {resume_epoch }  ")
     print(f"resume from optimizer ")
@@ -334,13 +337,13 @@ for e in range(epoch-resume_epoch) :
                 print(f"val_loss {val_loss} - train_loss {temp_loss} = {abs(val_loss-temp_loss)} > 0.3")
                 print(f"set grad clip to {grad_clip}")
             if best_val_loss is None or best_val_loss - val_loss >1e-4 :
-                
+                print(f'torch best model save steps {i} best_loss {val_loss} ')
                 torch.save(
                         {
                             'epoch' :  e+resume_epoch ,
                             'model_state_dict' : model.state_dict() , 
                             'optimizer_state_dict' : optimizer.state_dict(),
-                            'loss' : loss,
+                            'loss' : val_loss,
                             'steps'  : i
                         } , save_checkpoint_name
                     )
@@ -380,4 +383,13 @@ for e in range(epoch-resume_epoch) :
     
     scheduler.step(top_5_acc)
     wandb.log({'lr' : optimizer.param_groups[0]['lr']})
-    wandb.log({'epoch' : scheduler.last_epoch+resume_epoch})
+    wandb.log({'epoch' : e +resume_epoch})
+    
+    
+chkpoint = torch.load(save_checkpoint_name)
+# model
+chkpoint['epoch']+=1
+
+torch.save(chkpoint,save_checkpoint_name)
+    
+wandb.alert(title= "Finished Training " ,text = "Finish Training ")

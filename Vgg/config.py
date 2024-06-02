@@ -15,12 +15,12 @@ test_max = 256
 
 ## train configuration
 
-batch_size = 64
+batch_size = 128
 lr = 1e-2
 momentum = 0.9
 weight_decay  = 5e-4
 lr_factor = 0.1
-epoch = 74
+epoch = 4
 nestrov = False  # ImageNet D nestrov True
 clip= None # model D grad clip 0.7
 
@@ -32,15 +32,17 @@ eval_step =26 * accum_step  ## CalTech 5 Cifar 5 Mnist 6 , Cifar10 5 ImageNet  2
 
 
 ## model configuration
-xavier_count= 3  
+xavier_count= 4 
 
-last_xavier = -4  ##  
+last_xavier = -8  ##  
+
+except_xavier = None
 
 model_layers =None
 
 
 ## resume
 
+project_id = '57mvhi3u'
 
-
-init_from ='scratch' ## if you want load checkpoint, you can use it. resume or scratch
+init_from ='resume' ## if you want load checkpoint, you can use it. resume or scratch

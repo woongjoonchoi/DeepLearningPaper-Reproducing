@@ -56,6 +56,8 @@ class Model_vgg(nn.Module) :
         self.xavier_count = xavier_count
         self.last_xavier= last_xavier  ## if >0 , initialize last 3 fully connected noraml distribution
         # conv_1_by_1_3_outchannel = num_classes
+        self.except_xavier  = except_xavier
+        
         super().__init__()
         self.feature_extractor = make_feature_extractor(Config_channels[version] , Config_kernel[version])
         self.avgpool = nn.AdaptiveAvgPool2d((1,1))        
@@ -101,7 +103,7 @@ class Model_vgg(nn.Module) :
             print(m.kernel_size)
             print(m.out_channels)
             # if (m.out_channels == self.num_classes or m.out_channels == self.linear_out) and self.last_xavier>0 :
-            if self.last_xavier>0 :
+            if self.last_xavier>0 and (self.except_xavier is  None or self.last_xavier!=self.except_xavier):
                 print('xavier')
                 # self.last_xavier-=1
                 nn.init.xavier_uniform_(m.weight)
