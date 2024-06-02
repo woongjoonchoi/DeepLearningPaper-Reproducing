@@ -84,7 +84,7 @@ Plot from ResNet Paper. They trained 18 vgg on ImageNet Dataset from scratch .
 |---|---|----|---|---|---|----|
 |A |10 |256 |256| 30.84|57.48 ||
 |B | 10| 256|256 |32.00| 59.17||
-|C |6 | 256| 256|43.98|70.17||
+|C |10 | 256| 256|33.25|60.00||
 |D | |256 |256 || ||
 |Microsoft Research layer 18|10|-|-|-|-|**54.00**|
 
