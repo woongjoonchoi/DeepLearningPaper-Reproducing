@@ -60,13 +60,13 @@ If i train for the time specified in the paper, it is expected that the results 
 
 ## Single scale train and  evaluation
 ### Train dataset metric
-|<img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/fbe18970-b815-48cd-bb0a-ebf2f03551ed"  width="300" height="300"> |<img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/0260d25a-f03a-4e72-999e-029ceed6a805"  width="300" height="300">| <img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/cdae299b-31a1-4338-a8a6-760fbe7a8658"  width="300" height="300">| 
+|<img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/1266fb25-e3f3-4a19-ae72-f74ec88ae602"  width="300" height="300"> |<img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/904b6fc5-fee3-4646-8f9e-6235e6b585c1"  width="300" height="300">| <img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/1ee3d396-2667-4899-b0fe-185b743aa182)"  width="300" height="300">| 
 |:--: |:--: |:--:  |
 | *train/loss*  |*train/top-1-error* |*train/top-5-error*|
 
 ### Validation dataset metric
 
-|<img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/bb21663b-3fb5-4272-9591-81122c12c6da"  width="300" height="300"> |<img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/f29d1202-425b-42c7-bfdc-85f0ea5fd2f4"  width="300" height="300">|<img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/c8d67e27-9559-4daf-aa21-f0149735e653"  width="300" height="300">| 
+|<img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/7f2e4dc2-ed6c-46b6-92cf-c6dabd4c1005"  width="300" height="300"> |<img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/debace91-e2c8-4ca2-af96-a35bda566084"  width="300" height="300">|<img src="https://github.com/woongjoonchoi/DeepLearningPaper-Reproducing/assets/50165842/f3c42831-48f0-4e52-9fb4-34cf76ac2454"  width="300" height="300">| 
 |:--: |:--: |:--:  |
 | *val/loss*  |*val/top-1-error* |*val/top-5-error*|
 
