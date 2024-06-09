@@ -80,7 +80,7 @@ Plot from ResNet Paper. They trained 18 vgg on ImageNet Dataset from scratch .
 ### Metric Table
 
 
-|version |layer|epoch|train S|test Q |val top-5 | val top-1|center 10-crop|
+|version |layer|epoch|train S|test Q |val top-5(cebter crop) | val top-1(center crop)|center 10-crop|
 |---|---|---|----|---|---|---|----|
 |A |11|10 |256 |256| 30.84|57.48 ||
 |B |13|10| 256|256 |32.00| 59.17||
